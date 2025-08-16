@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Usuario{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h2>✨ Crear Nuevo Usuario</h2>
+                <p class="text-muted">Completa el formulario para registrar un nuevo usuario</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-container fade-in">
+                <form method="POST" action="/users/create" id="createUserForm">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="nombre" class="form-label">
+                                <span class="me-2">👤</span> Nombre completo *
+                            </label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" 
+                                   placeholder="Ingresa el nombre completo" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa un nombre válido
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="email" class="form-label">
+                                <span class="me-2">📧</span> Correo electrónico *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   placeholder="usuario@email.com" required>
+                            <div class="invalid-feedback">
+                                Por favor ingresa un email válido
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="edad" class="form-label">
+                                <span class="me-2">🎂</span> Edad *
+                            </label>
+                            <input type="number" class="form-control" id="edad" name="edad" 
+                                   min="0" max="120" placeholder="25" required>
+                            <div class="invalid-feedback">
+                                La edad debe estar entre 0 y 120 años
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="cedula" class="form-label">
+                                <span class="me-2">🆔</span> Cédula *
+                            </label>
+                            <input type="text" class="form-control" id="cedula" name="cedula" 
+                                   pattern="[0-9]{7,10}" placeholder="12345678" 
+                                   title="Debe contener entre 7 y 10 dígitos" required>
+                            <div class="invalid-feedback">
+                                La cédula debe tener entre 7 y 10 dígitos
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="password" class="form-label">
+                                <span class="me-2">🔒</span> Contraseña *
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       placeholder="Contraseña segura" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <span id="eyeIcon">👁️</span>
+                                </button>
+                            </div>
+                            <div class="form-text">
+                                Mínimo 6 caracteres, incluye letras y números
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <span class="loader d-none me-2"></span>
+                            <span class="button-text">✅ Crear Usuario</span>
+                        </button>
+                        <a href="/users" class="btn btn-outline-secondary">
+                            <span class="me-2">⬅️</span> Volver a la Lista
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle password visibility
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const password = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (password.type === 'password') {
+        password.type = 'text';
+        eyeIcon.textContent = '🙈';
+    } else {
+        password.type = 'password';
+        eyeIcon.textContent = '👁️';
+    }
+});
+
+// Form validation and submission
+document.getElementById('createUserForm').addEventListener('submit', function(e) {
+    const form = this;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const loader = submitButton.querySelector('.loader');
+    const buttonText = submitButton.querySelector('.button-text');
+    
+    // Basic validation
+    if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+    }
+    
+    // Show loading state
+    submitButton.disabled = true;
+    loader.classList.remove('d-none');
+    buttonText.textContent = 'Creando...';
+});
+
+// Real-time validation feedback
+const inputs = document.querySelectorAll('input');
+inputs.forEach(input => {
+    input.addEventListener('blur', function() {
+        if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+        } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+        }
+    });
+});
+</script>
+{% endblock %}
